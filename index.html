@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>St. Cloud Country Club Wedding Dates Calendar</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            background-color: rgb(1, 118, 213);
+            color: white;
+        }
+        .calendar-controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .calendar-controls button {
+            background-color: rgb(1, 118, 213);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .calendar-controls button:hover {
+            background-color: rgb(0, 94, 170);
+        }
+        .calendar {
+            width: 300px;
+            margin: 0 auto;
+            background-color: white;
+            border: 2px solid rgb(1, 118, 213);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .calendar table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .calendar th, .calendar td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            font-size: 14px;
+        }
+        .calendar th {
+            background-color: rgb(1, 118, 213);
+            color: white;
+        }
+        .available {
+            background-color: #e6f2ff;
+        }
+        #current-month-year {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>St. Cloud Country Club</h1>
+        <p>Available Wedding Dates</p>
+    </div>
+    <div class="calendar-controls">
+        <button id="prev-month">Previous Month</button>
+        <span id="current-month-year"></span>
+        <button id="next-month">Next Month</button>
+    </div>
+    <div class="calendar">
+        <table>
+            <thead>
+                <tr>
+                    <th>Mon</th>
+                    <th>Tue</th>
+                    <th>Wed</th>
+                    <th>Thu</th>
+                    <th>Fri</th>
+                    <th>Sat</th>
+                    <th>Sun</th>
+                </tr>
+            </thead>
+            <tbody id="calendar-body">
+                <!-- Calendar days will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
+    <script>
+        let currentMonth = 0; // January
+        let currentYear = 2025;
+        const availableDates = ['2025-02-15', '2025-02-23', '2025-03-01', '2025-03-08', '2025-03-09', '2025-03-14', '2025-03-16', '2025-03-22', '2025-03-23', '2025-03-29', '2025-03-30', '2025-04-05', '2025-04-06', '2025-04-13', '2025-04-19', '2025-04-26', '2025-04-27', '2025-05-03', '2025-05-04', '2025-05-10', '2025-05-17', '2025-05-18', '2025-05-24', '2025-05-25', '2025-05-31', '2025-06-07', '2025-06-14', '2025-06-15', '2025-06-21', '2025-06-22', '2025-06-28', '2025-06-29', '2025-07-12', '2025-07-13', '2025-07-26', '2025-07-27', '2025-08-09', '2025-08-10', '2025-08-23', '2025-08-24', '2025-08-30', '2025-08-31', '2025-09-13', '2025-09-14', '2025-09-27', '2025-09-28', '2025-10-04', '2025-10-05', '2025-10-18', '2025-10-19', '2025-10-25', '2025-10-26', '2025-11-01', '2025-11-02', '2025-11-08', '2025-11-09', '2025-11-15', '2025-11-16', '2025-11-22', '2025-11-23', '2025-11-29', '2025-11-30', '2025-12-06', '2025-12-07', '2025-12-13', '2025-12-14', '2025-12-20', '2025-12-21', '2025-12-27', '2025-12-28'];
+
+        function createCalendar(month, year) {
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const firstDay = new Date(year, month, 1).getDay();
+
+            let calendarBody = document.getElementById('calendar-body');
+            calendarBody.innerHTML = '';
+            document.getElementById('current-month-year').textContent = `${months[month]} ${year}`;
+
+            let date = 1;
+
+            for (let i = 0; i < 6; i++) {
+                let row = document.createElement('tr');
+
+                for (let j = 0; j < 7; j++) {
+                    if (i === 0 && j < firstDay) {
+                        let cell = document.createElement('td');
+                        row.appendChild(cell);
+                    } else if (date > daysInMonth) {
+                        break;
+                    } else {
+                        let cell = document.createElement('td');
+                        let cellText = document.createTextNode(date);
+                        cell.appendChild(cellText);
+                        
+                        // Check if this date is available
+                        let checkDate = `${year}-${(month + 1).toString().padStart(2, '0')}-${date.toString().padStart(2, '0')}`;
+                        if (availableDates.includes(checkDate)) {
+                            cell.classList.add('available');
+                        }
+                        row.appendChild(cell);
+                        date++;
+                    }
+                }
+                calendarBody.appendChild(row);
+            }
+        }
+
+        function prevMonth() {
+            if (currentMonth === 0) {
+                currentMonth = 11;
+                currentYear--;
+            } else {
+                currentMonth--;
+            }
+            createCalendar(currentMonth, currentYear);
+        }
+
+        function nextMonth() {
+            if (currentMonth === 11) {
+                currentMonth = 0;
+                currentYear++;
+            } else {
+                currentMonth++;
+            }
+            createCalendar(currentMonth, currentYear);
+        }
+
+        document.getElementById('prev-month').addEventListener('click', prevMonth);
+        document.getElementById('next-month').addEventListener('click', nextMonth);
+
+        createCalendar(currentMonth, currentYear); // Initial call to display the first month
+    </script>
+</body>
+</html>
