@@ -55,18 +55,69 @@
             padding: 10px;
             text-align: center;
             font-size: 14px;
+            position: relative; /* Needed for pseudo-element positioning */
         }
         .calendar th {
             background-color: rgb(1, 118, 213);
             color: white;
         }
         .available {
-            background-color: #e6f2ff;
+            background-color: #b3e5fc; /* Lighter blue background */
+            color: #01579b; /* Dark blue text for contrast */
+            font-weight: bold; /* Bold text */
+            border: 2px solid #01579b; /* Darker border for emphasis */
+            box-shadow: 0 0 5px rgba(1, 87, 155, 0.5); /* Subtle shadow to lift off the page */
+        }
+        .unavailable {
+            color: #999;
+            background-color: #f0f0f0;
+        }
+        .unavailable::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top right, transparent calc(50% - 1px), #999 calc(50% - 1px), #999 calc(50% + 1px), transparent calc(50% + 1px));
         }
         #current-month-year {
             font-size: 18px;
             font-weight: bold;
             margin: 0 10px;
+        }
+        .legend {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .legend-item {
+            display: inline-block;
+            margin: 0 10px;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+        .available-legend {
+            background-color: #b3e5fc;
+            border: 2px solid #01579b;
+        }
+        .unavailable-legend {
+            background-color: #f0f0f0;
+            position: relative;
+        }
+        .unavailable-legend::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top right, transparent calc(50% - 1px), #999 calc(50% - 1px), #999 calc(50% + 1px), transparent calc(50% + 1px));
         }
         
         @media (max-width: 600px) {
@@ -110,6 +161,14 @@
             </tbody>
         </table>
     </div>
+    <div class="legend">
+        <div class="legend-item">
+            <span class="legend-color available-legend"></span> Available Dates
+        </div>
+        <div class="legend-item">
+            <span class="legend-color unavailable-legend"></span> Unavailable Dates
+        </div>
+    </div>
     <script>
         let currentMonth = 0; // January
         let currentYear = 2025;
@@ -144,6 +203,8 @@
                         let checkDate = `${year}-${(month + 1).toString().padStart(2, '0')}-${date.toString().padStart(2, '0')}`;
                         if (availableDates.includes(checkDate)) {
                             cell.classList.add('available');
+                        } else {
+                            cell.classList.add('unavailable');
                         }
                         row.appendChild(cell);
                         date++;
@@ -178,7 +239,5 @@
 
         createCalendar(currentMonth, currentYear); // Initial call to display the first month
     </script>
-</body>
-</html>
 </body>
 </html>
